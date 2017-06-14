@@ -30,16 +30,20 @@ objects = obj/loader.o \
           obj/net/icmp.o \
           obj/net/udp.o \
           obj/net/tcp.o \
-          obj/kernel.o
+          obj/kernel.o \
+		  obj/fs/dospart.o \
+		  obj/fs/fat.o \
+		  obj/monitor.o \
+		  obj/handler.o
 
 
 run: mykernel.iso
 	(killall VirtualBox && sleep 1) || true
-	VirtualBox --startvm 'My Operating System' &
+	VirtualBox --startvm 'wyoos' &
 
 obj/%.o: src/%.cpp
 	mkdir -p $(@D)
-	gcc $(GCCPARAMS) -c -o $@ $<
+	g++ $(GCCPARAMS) -c -o $@ $<
 
 obj/%.o: src/%.s
 	mkdir -p $(@D)
