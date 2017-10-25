@@ -1,7 +1,7 @@
 #include <drivers/ata.h>
 #include <monitor.h>
 
-#define LOGACTION 0
+#define LOGACTION 1
 
 using namespace myos;
 using namespace myos::common;
@@ -75,6 +75,16 @@ void AdvancedTechnologyAttachment::Read28(common::uint32_t sectorNum, uint8_t* b
     if(sectorNum > 0x0FFFFFFF)
         return;
 
+    #if LOGACTION
+        printf("Reading ATA Drive: ");
+        printfHex32(sectorNum);
+        printf(", Buffer ");
+        printfHex32((uint32_t)buffer);
+        printf(", Size ");
+        printfHex32((uint32_t)count);
+        printf("\n");
+    #endif
+
     devicePort.Write( (master ? 0xE0 : 0xF0) | ((sectorNum & 0x0F000000) >> 24) );
     errorPort.Write(0);
     sectorCountPort.Write(1);
@@ -92,12 +102,6 @@ void AdvancedTechnologyAttachment::Read28(common::uint32_t sectorNum, uint8_t* b
         printf("ERROR Reading!\n");
         return;
     }
-
-    #if LOGACTION
-        printf("Reading ATA Drive: ");
-        printfHex32(sectorNum);
-        printf("\n");
-    #endif
 
     for(int i = 0; i < count; i += 2)
     {

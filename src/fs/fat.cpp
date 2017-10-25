@@ -61,14 +61,14 @@ void* myos::fs::FileAllocationTable32::Read(const char* fileName, uint32_t* buff
         uint32_t firstFileCluster = ((uint32_t)dirent[i].firstClusterHi << 16)
                             | ((uint32_t)dirent[i].firstClusterLow);
 
-        int32_t SIZE = dirent[i].size;
+        int32_t SIZE = 512;//dirent[i].size;
         *bufferSize = SIZE;
         int32_t nextFileCluster = firstFileCluster;
 
         uint8_t fatbuffer[513];
 
-        uint8_t* returnBuffer = new uint8_t[SIZE];
-
+        //uint8_t* returnBuffer = new uint8_t[SIZE];
+        uint8_t returnBuffer[512];
         //loop through clusters of file
         while(SIZE > 0) {
             uint32_t fileSector = dataStart + sectorsPerCluster * (nextFileCluster - 2);
