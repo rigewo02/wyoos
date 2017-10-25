@@ -43,8 +43,6 @@ void MSDOSPartitionTable::ReadPartitions(drivers::AdvancedTechnologyAttachment *
 
         if (mbr.primaryPartitions[i].partition_id != 0)
             FileAllocationTable32 fat32(hd, mbr.primaryPartitions[i].start_lba);
-
-        printf("\n");
     }
 
 }

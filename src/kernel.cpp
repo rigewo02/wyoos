@@ -158,8 +158,13 @@ extern "C" void kernelMain(const void* multiboot_structure, uint32_t /*multiboot
     // fourth: 0x168
 
     MSDOSPartitionTable::ReadPartitions(&ata0m);
-
-    #ifdef NETWORK
+/*
+    Task task1(&gdt, taskA);
+    taskManager.AddTask(&task1);
+    Task task2(&gdt, taskB);
+    taskManager.AddTask(&task2);
+*/  
+  #ifdef NETWORK
         initializeNetwork(&drvManager, &interrupts);
     #else
         interrupts.Activate();

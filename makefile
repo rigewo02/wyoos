@@ -2,9 +2,9 @@
 # sudo apt-get install g++ binutils libc6-dev-i386
 # sudo apt-get install VirtualBox grub-legacy xorriso
 
-GCCPARAMS = -m32 -Iinclude -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -Wno-write-strings
-ASPARAMS = --32
-LDPARAMS = -melf_i386
+GCCPARAMS = -g -m32 -Iinclude -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -Wno-write-strings
+ASPARAMS = -g --32
+LDPARAMS = -g -melf_i386
 
 objects = obj/loader.o \
           obj/gdt.o \
@@ -31,10 +31,10 @@ objects = obj/loader.o \
           obj/net/udp.o \
           obj/net/tcp.o \
           obj/kernel.o \
-		  obj/fs/dospart.o \
-		  obj/fs/fat.o \
-		  obj/monitor.o \
-		  obj/handler.o
+	  obj/fs/dospart.o \
+	  obj/fs/fat.o \
+	  obj/monitor.o \
+	  obj/handler.o
 
 
 run: mykernel.iso
@@ -64,8 +64,13 @@ mykernel.iso: mykernel.bin
 	echo '  multiboot /boot/mykernel.bin'    >> iso/boot/grub/grub.cfg
 	echo '  boot'                            >> iso/boot/grub/grub.cfg
 	echo '}'                                 >> iso/boot/grub/grub.cfg
-	grub-mkrescue --output=mykernel.iso iso
+	grub2-mkrescue --output=mykernel.iso iso
 	rm -rf iso
+qemu: mykernel.iso
+	qemu-system-i386 $<
+
+debug: mykernel.iso
+	qemu-system-i386 -s -S $<
 
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin

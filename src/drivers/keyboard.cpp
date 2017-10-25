@@ -1,5 +1,6 @@
 
 #include <drivers/keyboard.h>
+#include <monitor.h>
 
 using namespace myos::common;
 using namespace myos::drivers;
