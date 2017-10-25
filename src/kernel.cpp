@@ -25,6 +25,7 @@
 #include <fs/dospart.h>
 
 #include <handler.h>
+#include <list.h>
 
 
 //#define GRAPHICSMODE
@@ -134,36 +135,41 @@ extern "C" void kernelMain(const void* multiboot_structure, uint32_t /*multiboot
         desktop.AddChild(&win2);
     #endif
 
+    uint16_t ataprt[] = {0x1F0, 0x170, 0x1E8, 0x168};
+    LinkedList<AdvancedTechnologyAttachment*> atas;
 
+    AdvancedTechnologyAttachment* ata;
 
-    printf("\nS-ATA primary master: ");
-    AdvancedTechnologyAttachment ata0m(true, 0x1F0);
-    ata0m.Identify();
+    for (int i = 0; i < sizeof(ataprt) / sizeof(ataprt[0]); i++) {
+        ata = new AdvancedTechnologyAttachment(true, ataprt[i]);
+        if (ata->Identify()) {
+            atas.add(ata);
+            printf("S-ATA master ");
+            printfHex(i);
+            printf("\n");
+            MSDOSPartitionTable::ReadPartitions(ata);
+        }
 
-    printf("\nS-ATA primary slave: ");
-    AdvancedTechnologyAttachment ata0s(false, 0x1F0);
-    ata0s.Identify();
-    //ata0s.Write28(0, (uint8_t*)"http://www.AlgorithMan.de", 25);
-    //ata0s.Flush();
-    //ata0s.Read28(0, 25);
+        ata = new AdvancedTechnologyAttachment(false, ataprt[i]);
+        if (ata->Identify()) {
+            atas.add(ata);
+            printf("S-ATA slave ");
+            printfHex(i);
+            printf("\n");
+            MSDOSPartitionTable::ReadPartitions(ata);
+        }
+    }
+    printf("Total number of ATAs: ");
+    printfHex(atas.size());
+    printf("\n");
 
-    printf("\nS-ATA secondary master: ");
-    AdvancedTechnologyAttachment ata1m(true, 0x170);
-    ata1m.Identify();
-
-    printf("\nS-ATA secondary slave: ");
-    AdvancedTechnologyAttachment ata1s(false, 0x170);
-    ata1s.Identify();
-    // third: 0x1E8
-    // fourth: 0x168
-
-    MSDOSPartitionTable::ReadPartitions(&ata0m);
 /*
     Task task1(&gdt, taskA);
     taskManager.AddTask(&task1);
     Task task2(&gdt, taskB);
     taskManager.AddTask(&task2);
 */
+
   #ifdef NETWORK
         initializeNetwork(&drvManager, &interrupts);
     #else

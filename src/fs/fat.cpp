@@ -8,7 +8,8 @@ using namespace myos::common;
 using namespace myos::fs;
 using namespace myos::drivers;
 
-myos::fs::FileAllocationTable32::FileAllocationTable32(AdvancedTechnologyAttachment *hd, uint32_t partitionOffset) {
+myos::fs::FileAllocationTable32::FileAllocationTable32(AdvancedTechnologyAttachment *hd, uint32_t partitionOffset)
+: hd(hd) {
 
     hd->Read28(partitionOffset, (uint8_t*)&bpb, sizeof(BiosParameterBlock32));
 
@@ -37,38 +38,19 @@ void* myos::fs::FileAllocationTable32::Read(const char* fileName, uint32_t* buff
 
 
         if (!strcmp(fileName, (const char*)dirent[i].name, true)) {
-            printf(fileName);
-            printf("(");
-            for (int j = 0; j < 8; j++) {
-                printfHex(fileName[j]);
-            }
-            printf(")");
-            printf(" is ");
-            printf((const char*)dirent[i].name);
-            printf("(");
-            for (int j = 0; j < 8; j++) {
-                printfHex(dirent[i].name[j]);
-            }
-            printf(")\n");
             continue;
         }
-
-
-        printf("Reading file ");
-        printf((const char*) dirent[i].name);
-        printf("\n");
 
         uint32_t firstFileCluster = ((uint32_t)dirent[i].firstClusterHi << 16)
                             | ((uint32_t)dirent[i].firstClusterLow);
 
-        int32_t SIZE = 512;//dirent[i].size;
-        *bufferSize = SIZE;
+        int32_t SIZE = dirent[i].size;
+        if (bufferSize != nullptr)
+            *bufferSize = SIZE;
         int32_t nextFileCluster = firstFileCluster;
 
+        uint8_t* buffer = new uint8_t[SIZE];
         uint8_t fatbuffer[513];
-
-        //uint8_t* returnBuffer = new uint8_t[SIZE];
-        uint8_t returnBuffer[512];
         //loop through clusters of file
         while(SIZE > 0) {
             uint32_t fileSector = dataStart + sectorsPerCluster * (nextFileCluster - 2);
@@ -78,7 +60,7 @@ void* myos::fs::FileAllocationTable32::Read(const char* fileName, uint32_t* buff
             for ( ; SIZE > 0; SIZE -= 512) {
 
                 //read the current sector in the buffer
-                hd->Read28(fileSector + sectorOffset, returnBuffer + sizeof(returnBuffer) - SIZE, 512);
+                hd->Read28(fileSector + sectorOffset, buffer, SIZE > 512 ? 512 : SIZE);
 
                 //current iteration exceeded current cluster, get next cluster
                 if (++sectorOffset > sectorsPerCluster) {
@@ -96,6 +78,6 @@ void* myos::fs::FileAllocationTable32::Read(const char* fileName, uint32_t* buff
             uint32_t fatOffsetInSectorForCurrentCluster = nextFileCluster % (512/sizeof(uint32_t));
             nextFileCluster = ((uint32_t*)&fatbuffer)[fatOffsetInSectorForCurrentCluster];
         }
-        return returnBuffer;
+        return buffer;
     }
 }

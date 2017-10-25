@@ -25,14 +25,14 @@ namespace myos
             hardwarecommunication::Port8Bit commandPort;
             hardwarecommunication::Port8Bit controlPort;
         public:
-
+            AdvancedTechnologyAttachment();
             AdvancedTechnologyAttachment(bool master, common::uint16_t portBase);
             ~AdvancedTechnologyAttachment();
 
-            void Identify();
-            void Read28(common::uint32_t sectorNum, common::uint8_t* buffer, int count = 512);
-            void Write28(common::uint32_t sectorNum, common::uint8_t* data, common::uint32_t count);
-            void Flush();
+            bool Identify();
+            bool Read28(common::uint32_t sectorNum, common::uint8_t* buffer, int count = 512);
+            bool Write28(common::uint32_t sectorNum, common::uint8_t* data, common::uint32_t count);
+            bool Flush();
 
 
         };
