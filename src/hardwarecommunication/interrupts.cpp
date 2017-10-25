@@ -1,15 +1,8 @@
-
+#include <monitor.h>
 #include <hardwarecommunication/interrupts.h>
 using namespace myos;
 using namespace myos::common;
 using namespace myos::hardwarecommunication;
-
-
-void printf(char* str);
-void printfHex(uint8_t);
-
-
-
 
 
 InterruptHandler::InterruptHandler(InterruptManager* interruptManager, uint8_t InterruptNumber)
@@ -188,7 +181,7 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interrupt, uint32_t esp)
         printf("UNHANDLED INTERRUPT 0x");
         printfHex(interrupt);
     }
-    
+
     if(interrupt == hardwareInterruptOffset)
     {
         esp = (uint32_t)taskManager->Schedule((CPUState*)esp);
@@ -204,17 +197,3 @@ uint32_t InterruptManager::DoHandleInterrupt(uint8_t interrupt, uint32_t esp)
 
     return esp;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

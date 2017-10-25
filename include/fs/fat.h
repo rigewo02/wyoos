@@ -63,9 +63,11 @@ namespace myos {
         class FileAllocationTable32 {
         public:
             FileAllocationTable32(drivers::AdvancedTechnologyAttachment *hd, common::uint32_t partitionOffset);
-            void Read();
+            void* Read(const char* fileName, myos::common::uint32_t* bufferSize);
         private:
+            BiosParameterBlock32 bpb;
             drivers::AdvancedTechnologyAttachment* hd;
+            DirectoryEntry32 dirent[16];
             common::uint32_t sectorsPerCluster;
             common::uint32_t rootStart;
             common::uint32_t fatSize;

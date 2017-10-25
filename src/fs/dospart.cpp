@@ -41,8 +41,11 @@ void MSDOSPartitionTable::ReadPartitions(drivers::AdvancedTechnologyAttachment *
         printfHex(mbr.primaryPartitions[i].partition_id);
         printf("\n");
 
-        if (mbr.primaryPartitions[i].partition_id != 0)
+        if (mbr.primaryPartitions[i].partition_id != 0) {
             FileAllocationTable32 fat32(hd, mbr.primaryPartitions[i].start_lba);
+            uint32_t bufferSize = 0;
+            uint8_t* buffer = (uint8_t*)fat32.Read("TEST1", &bufferSize);
+        }
     }
 
 }

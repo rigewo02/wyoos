@@ -38,7 +38,7 @@ using namespace myos::gui;
 using namespace myos::net;
 using namespace myos::fs;
 
-void printf(char* str);
+void printf(const char* str);
 void printfHex(uint8_t key);
 void printfHex16(uint16_t key);
 void printfHex32(uint32_t key);
@@ -163,7 +163,7 @@ extern "C" void kernelMain(const void* multiboot_structure, uint32_t /*multiboot
     taskManager.AddTask(&task1);
     Task task2(&gdt, taskB);
     taskManager.AddTask(&task2);
-*/  
+*/
   #ifdef NETWORK
         initializeNetwork(&drvManager, &interrupts);
     #else

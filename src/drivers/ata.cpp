@@ -84,8 +84,7 @@ void AdvancedTechnologyAttachment::Read28(common::uint32_t sectorNum, uint8_t* b
     commandPort.Write(0x20);
 
     uint8_t status = commandPort.Read();
-    while(((status & 0x80) == 0x80)
-       && ((status & 0x01) != 0x01))
+    while(((status & 0x80) == 0x80) && ((status & 0x01) != 0x01))
         status = commandPort.Read();
 
     if(status & 0x01)
@@ -94,7 +93,7 @@ void AdvancedTechnologyAttachment::Read28(common::uint32_t sectorNum, uint8_t* b
         return;
     }
 
-    #if LOGACTIOn
+    #if LOGACTION
         printf("Reading ATA Drive: ");
         printfHex32(sectorNum);
         printf("\n");

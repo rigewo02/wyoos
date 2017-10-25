@@ -31,10 +31,11 @@ objects = obj/loader.o \
           obj/net/udp.o \
           obj/net/tcp.o \
           obj/kernel.o \
-	  obj/fs/dospart.o \
-	  obj/fs/fat.o \
-	  obj/monitor.o \
-	  obj/handler.o
+		  obj/fs/dospart.o \
+		  obj/fs/fat.o \
+		  obj/monitor.o \
+		  obj/handler.o \
+		  obj/util.o
 
 
 run: mykernel.iso
